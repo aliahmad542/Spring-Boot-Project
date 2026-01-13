@@ -63,3 +63,164 @@ SELECT * FROM APPOINTMENTS;
 
  
 
+
+---
+
+````md
+## 7. الأمان
+- المصادقة باستخدام JWT
+- التفويض بناءً على الدور (Role-Based Authorization)
+- منع الوصول إلى الـ APIs بدون Token
+
+---
+
+## 8. كيفية تشغيل المشروع
+- تثبيت Java 17 و Maven
+- فتح المشروع باستخدام IDE
+- تنفيذ الأوامر التالية:
+```bash
+mvn clean install
+mvn spring-boot:run
+````
+
+* اختبار الـ APIs باستخدام Postman
+
+---
+
+## 9. توثيق الـ APIs
+
+### تسجيل مستخدم
+
+**POST**
+[https://localhost:8443/api/auth/register](https://localhost:8443/api/auth/register)
+
+```json
+{
+  "firstName": "أحمد",
+  "lastName": "علي",
+  "email": "ahmed.ali@test.com",
+  "password": "Ahmed123!",
+  "phone": "0912345678",
+  "role": "CUSTOMER"
+}
+```
+
+---
+
+### تسجيل الدخول
+
+**POST**
+[https://localhost:8443/api/auth/login](https://localhost:8443/api/auth/login)
+
+```json
+{
+  "email": "ahmed.ali@test.com",
+  "password": "Ahmed123!"
+}
+```
+
+---
+
+### جلب جميع المستخدمين (ADMIN فقط)
+
+**GET**
+[https://localhost:8443/api/users](https://localhost:8443/api/users)
+Authorization: Bearer <ADMIN_TOKEN>
+
+---
+
+### جلب الملف الشخصي
+
+**GET**
+[https://localhost:8443/api/users/profile](https://localhost:8443/api/users/profile)
+Authorization: Bearer <CUSTOMER_TOKEN>
+
+---
+
+### حذف مستخدم (ADMIN فقط)
+
+**DELETE**
+[https://localhost:8443/api/users/{id}](https://localhost:8443/api/users/{id})
+Authorization: Bearer <ADMIN_TOKEN>
+
+---
+
+### إنشاء خدمة (ADMIN فقط)
+
+**POST**
+[https://localhost:8443/api/services](https://localhost:8443/api/services)
+Authorization: Bearer <ADMIN_TOKEN>
+
+```json
+{
+  "name": "استشارة طبية",
+  "description": "استشارة طبية لمدة 30 دقيقة",
+  "price": 150.0,
+  "duration": 30,
+  "staff": {
+    "id": 2
+  }
+}
+```
+
+---
+
+### جلب الخدمات
+
+**GET**
+[https://localhost:8443/api/services](https://localhost:8443/api/services)
+Authorization: Bearer <TOKEN>
+
+---
+
+### حذف خدمة (ADMIN فقط)
+
+**DELETE**
+[https://localhost:8443/api/services/{id}](https://localhost:8443/api/services/{id})
+Authorization: Bearer <ADMIN_TOKEN>
+
+---
+
+### حجز موعد
+
+**POST**
+[https://localhost:8443/api/appointments?customerId=1&staffId=2&serviceId=1](https://localhost:8443/api/appointments?customerId=1&staffId=2&serviceId=1)
+Authorization: Bearer <CUSTOMER_TOKEN>
+
+```json
+{
+  "appointmentDate": "2024-12-15",
+  "startTime": "09:00:00",
+  "endTime": "09:30:00",
+  "notes": "أول موعد اختبار"
+}
+```
+
+---
+
+### جلب مواعيد العميل
+
+**GET**
+[https://localhost:8443/api/appointments/customer/1](https://localhost:8443/api/appointments/customer/1)
+Authorization: Bearer <CUSTOMER_TOKEN>
+
+---
+
+### جلب مواعيد الموظف
+
+**GET**
+[https://localhost:8443/api/appointments/staff/2](https://localhost:8443/api/appointments/staff/2)
+Authorization: Bearer <STAFF_TOKEN>
+
+---
+
+### جلب جميع المواعيد (ADMIN فقط)
+
+**GET**
+[https://localhost:8443/api/appointments/all](https://localhost:8443/api/appointments/all)
+Authorization: Bearer <ADMIN_TOKEN>
+
+```
+
+---
+
