@@ -54,7 +54,6 @@ Appointment Smart Scheduling System
 https://localhost:8443/h2-console
 
 أوامر التحقق:
-```sql
 SHOW TABLES;
 SELECT * FROM USERS;
 SELECT * FROM SERVICES;
