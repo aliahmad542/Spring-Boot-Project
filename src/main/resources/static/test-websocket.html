@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>Notifications Test</title>
+
+    <!-- مكتبات SockJS + STOMP -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        h1 { color: #2c3e50; }
+        ul { list-style: none; padding: 0; }
+        li { background: #ecf0f1; margin: 5px 0; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+<h1>إشعارات المستخدم</h1>
+<ul id="notifications"></ul>
+
+<script>
+    // ⚠️ رقم المستخدم ثابت، كما كان قبل أي تعديل
+    const userId = 1; // عدلي هذا الرقم يدوي إذا حبيت
+
+    // اتصال WebSocket
+    const socket = new SockJS('https://localhost:8443/ws');
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function(frame) {
+        console.log("✅ WebSocket Connected:", frame);
+
+        // قناة عامة لجميع المستخدمين
+        stompClient.subscribe('/topic/appointments/all', function(message) {
+            console.log("📢 All Users Notification:", message.body);
+            const li = document.createElement("li");
+            li.textContent = message.body;
+document.getElementById("notifications").appendChild(li);
+        });
+
+        // قناة خاصة بالمستخدم
+        stompClient.subscribe(`/topic/appointments/${userId}`, function(message) {
+            console.log("📩 User Notification:", message.body);
+            const li = document.createElement("li");
+            li.textContent = message.body;
+            document.getElementById("notifications").appendChild(li);
+            alert("إشعار جديد: " + message.body);
+        });
+
+    }, function(error) {
+        console.error("❌ WebSocket error:", error);
+        alert("فشل الاتصال بـ WebSocket، تأكد من تشغيل المشروع وHTTPS على 8443");
+    });
+</script>
+
+</body>
+</html>
